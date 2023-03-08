@@ -4,6 +4,7 @@ import java.util.*;
 import java.io.*;
 import java.awt.image.*;
 import javax.imageio.*;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -411,11 +412,19 @@ public class Main implements Runnable
         }
     }
 
+    private static void createAndShowGUI() {
+        GUI gui = new GUI();
+        gui.setVisible(true);
+    }
     public static void main(String[] args)
     {
         Main mlb = new Main();
-        Thread th = new Thread(mlb);
-        th.start();
+
+        //Schedule a job for the event dispatch thread:
+        //creating and showing this application's GUI.
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+      //  Thread th = new Thread(mlb);
+     //   th.start();
     }
 
 }
