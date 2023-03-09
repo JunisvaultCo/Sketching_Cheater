@@ -27,21 +27,22 @@ class ImagePreview extends JPanel {
     public void paint(Graphics graphics)
     {
         super.paint(graphics);
-        if (image != null)
+        if (image != null) {
             graphics.drawImage(image, 0, 0, null);
+        }
     }
     public void setImage(boolean[][] isBlack)
     {
-        int width = isBlack[0].length;
-        int height = isBlack.length;
+        int height = isBlack[0].length;
+        int width = isBlack.length;
 
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics g = image.getGraphics();
         g.setColor(Color.WHITE);
-        g.drawRect(0, 0, width, height);
+        g.fillRect(0, 0, width, height);
         g.setColor(Color.BLACK);
-        for (int i = 0; i < height; i++)
-            for (int j = 0; j < width; j++)
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
                 if (isBlack[i][j])
                     g.drawRect(i, j, 0, 0);
     }
@@ -72,7 +73,6 @@ public class GUI extends JFrame {
         JPanel inside = new JPanel();
         inside.setLayout(new BoxLayout(inside, BoxLayout.X_AXIS));
         getContentPane().add(inside);
-
 
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
@@ -112,7 +112,7 @@ public class GUI extends JFrame {
         inside.add(buttons);
         imagePreview = new ImagePreview();
         inside.add(imagePreview);
-        super.pack();
+        pack();
         super.setLocationRelativeTo(null);
     }
     void filePopUp()
@@ -185,5 +185,11 @@ public class GUI extends JFrame {
             errorArea.setText(e.getMessage());
             e.printStackTrace();
         }
+    }
+    @Override
+    public void pack()
+    {
+        super.pack();
+        imagePreview.repaint();
     }
 }
