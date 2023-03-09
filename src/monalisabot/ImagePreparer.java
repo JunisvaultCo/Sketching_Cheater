@@ -13,12 +13,14 @@ public class ImagePreparer
     boolean[][] walked;
     int blackPixelsCount;
     boolean[][] isBlack;
+    int threshold;
 
     int[] dx = {-1,-1,-1, 0, 1, 1, 1, 0};
     int[] dy = {-1, 0, 1, 1, 1, 0,-1,-1};
-    ImagePreparer(BufferedImage image)
+    ImagePreparer(BufferedImage image, int threshold)
     {
         this.image = image;
+        this.threshold = threshold;
         blackPixelsCount = 0;
         isBlack = new boolean[image.getWidth()][image.getHeight()];
         inWave = new boolean[image.getWidth()][image.getHeight()];
@@ -243,7 +245,7 @@ public class ImagePreparer
                 int green = (color & 0xFF00) >> 8;
                 int blue = (color & 0xFF);
                 int max = Math.max(red, Math.max(blue, green));
-                if (max < 0x00000022) //usually 55 sometimes AA
+                if (max < threshold)
                 {
                     isBlack[j][i] = true;
                     blackPixelsCount++;

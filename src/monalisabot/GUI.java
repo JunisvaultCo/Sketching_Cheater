@@ -141,7 +141,7 @@ public class GUI extends JFrame {
                 {
                     throw new Exception("Please use a smaller image (no bigger than 800)");
                 }
-                imagePreparer = new ImagePreparer(ImageIO.read(initialFile));
+                imagePreparer = new ImagePreparer(ImageIO.read(initialFile), threshold);
                 imagePreparer.prepareImage();
                 imagePreview.setSize(image.getWidth(), image.getHeight());
                 imagePreview.setImage(imagePreparer.isBlack);
