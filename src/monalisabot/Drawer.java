@@ -139,12 +139,11 @@ public class Drawer implements Runnable
                     {
                         System.out.println("haha I have insomnia");
                     }
-                  //  bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                    bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                 }
-            //    System.out.println(p.x + offsetX + " " + (p.y + offsetY));
-           //     bot.mouseMove(p.x + offsetX, p.y + offsetY);
+                bot.mouseMove(p.x + offsetX, p.y + offsetY);
             }
-          //  bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+            bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
             try
             {
                 Thread.sleep(75);

@@ -14,15 +14,13 @@ public class StopFromKeyboard implements Runnable {
         isKeyPressed();
         try {
             while (drawer.running)
-                if (isKeyPressed()) {
+                if (isKeyPressed())
                     drawer.running = false;
-
-                }
             Thread.sleep(100);
         }
-        catch (Exception e)
-        {
-
+        catch (Exception e) {
+            System.out.println("Mwahaha can't sleep");
+            e.printStackTrace();
         }
     }
 }
