@@ -1,7 +1,9 @@
 package monalisabot;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class DebugHelper
 {
@@ -19,17 +21,6 @@ public class DebugHelper
 
     void addPixelColour(int x, int y, int cost)
     {
-  /*  int red = cost;
-    int green = red / 16;
-    int blue = green / 16;/*
-    int red = cost;
-    int green = red / 16;
-    int blue = green / 16;*//*
-    red = (red % 16) * 16;
-    green = (green % 16) * 16;
-    blue = (blue % 16) * 16;
-    g2.setColor(new Color(red, green, blue));
-    g2.fillRect(x, y, 1, 1);*/
         cost = cost % 765;
         int red = Math.max(255 - cost, 0) + Math.min(Math.max(cost - 511, 0), 255);
         int green = 255 - Math.min(Math.abs(255 - cost), 255);
@@ -48,8 +39,14 @@ public class DebugHelper
         g2.fillRect(0, 0, width, height);
         for (int i = 0; i < cost.length; i++) {
             for (int j = 0; j < cost[i].length; j++) {
-                addPixelColour(j, i, cost[j][i]);
+                if (cost[i][j] != ImageUtil.BIG_INTEGER)
+                    addPixelColour(i, j, cost[i][j]);
             }
         }
+        try
+        {
+            ImageIO.write(img, "png", new File("output.png"));
+        }
+        catch (Exception e) {}
     }
 }

@@ -76,7 +76,7 @@ class Bresenham {
         return p;
     }
 
-    static ArrayList<Point> drawLine(int origX, int origY, int beginX, int beginY)
+    public static ArrayList<Point> drawLine(int origX, int origY, int beginX, int beginY)
     {
         int octant;
         int xFinal = beginX - origX;
