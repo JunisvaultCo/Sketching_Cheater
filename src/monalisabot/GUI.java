@@ -142,7 +142,7 @@ public class GUI extends JFrame {
                 {
                     throw new Exception("Use a valid image!");
                 }
-                if (image.getWidth() > 800 || image.getHeight() > 800)
+                if (image.getWidth() > 1300 || image.getHeight() > 1300)
                 {
                     throw new Exception("Please use a smaller image (no bigger than 800)");
                 }
@@ -179,8 +179,10 @@ public class GUI extends JFrame {
                                         200,
                                         200,
                                         imagePreparer.blackPixelsCount);
-            Thread th = new Thread(drawer);
-            th.start();
+            Thread drawerThread = new Thread(drawer);
+            Thread keyboardThread = new Thread(new StopFromKeyboard(drawer));
+            drawerThread.start();
+            keyboardThread.start();
         } catch (Exception e) {
             errorArea.setText(e.getMessage());
             e.printStackTrace();

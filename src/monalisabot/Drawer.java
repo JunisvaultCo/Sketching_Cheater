@@ -17,6 +17,7 @@ public class Drawer implements Runnable
     int offsetY;
     int countBlackPixels;
     Robot bot;
+    boolean running = false;
 
     Drawer (BufferedImage image, boolean[][] isBlack, int offsetX, int offsetY, int blackPixelsCount)
     {
@@ -124,6 +125,8 @@ public class Drawer implements Runnable
             boolean first = true;
             for (Point p : line)
             {
+                if (!running)
+                    return;
                 if (first)
                 {
                     bot.mouseMove(p.x + offsetX, p.y + offsetY);
@@ -158,8 +161,10 @@ public class Drawer implements Runnable
         try
         {
             bot = new Robot();
-            while (countBlackPixels != 0)
+            running = true;
+            while (countBlackPixels != 0 && running) {
                 findAndDrawLine();
+            }
             System.out.println(countLines);
         }
         catch (AWTException awt)
