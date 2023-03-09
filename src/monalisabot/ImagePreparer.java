@@ -44,10 +44,10 @@ public class ImagePreparer
             {
                 int newX = x + dx[k];
                 int newY = y + dy[k];
-                if (ImageUtil.isInBounds(newX, newY, image) && cost[newX][newY] == cost[x][y] - 1)
+                if (ImageUtil.isInBounds(newX, newY, image) && cost[newX][newY] == cost[x][y] - 1 && isBlack[x][y])
                 {
                     found = true;
-                    if (!endPoints.contains(basePoint[newX][newY]))
+                    if (!endPoints.contains(basePoint[newX][newY]) && basePoint[newX][newY] != null)
                         endPoints.add(basePoint[newX][newY]);
                 }
             }
@@ -112,7 +112,7 @@ public class ImagePreparer
                     }
                 }
                 if (!found)
-                    for (int k = 0; k < 8; k+=2)
+                    for (int k = 0; k < 8; k += 2)
                     {
                         int newX = x + dx[k];
                         int newY = y + dy[k];
@@ -255,7 +255,7 @@ public class ImagePreparer
     void prepareImage()
     {
         detectBlackPixels();
-      //  makeBounding();
+    //    makeBounding();
         makeLinesLessWide();
     }
 }

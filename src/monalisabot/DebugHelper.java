@@ -21,6 +21,8 @@ public class DebugHelper
 
     void addPixelColour(int x, int y, int cost)
     {
+        if (cost == ImageUtil.BIG_INTEGER)
+            return;
         cost = cost % 765;
         int red = Math.max(255 - cost, 0) + Math.min(Math.max(cost - 511, 0), 255);
         int green = 255 - Math.min(Math.abs(255 - cost), 255);
@@ -39,7 +41,6 @@ public class DebugHelper
         g2.fillRect(0, 0, width, height);
         for (int i = 0; i < cost.length; i++) {
             for (int j = 0; j < cost[i].length; j++) {
-                if (cost[i][j] != ImageUtil.BIG_INTEGER)
                     addPixelColour(i, j, cost[i][j]);
             }
         }
