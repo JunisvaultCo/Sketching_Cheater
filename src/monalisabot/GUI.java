@@ -58,6 +58,7 @@ public class GUI extends JFrame {
     JButton seeCoordinatesButton;
     JTextArea errorArea;
     JFileChooser jFileChooser;
+    boolean setFolder = false;
     ImagePreview imagePreview;
     File initialFile;
     Point topLeftMost = null;
@@ -116,6 +117,10 @@ public class GUI extends JFrame {
     }
     void filePopUp()
     {
+        if (!setFolder) {
+            jFileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+            setFolder = true;
+        }
         int ok = jFileChooser.showOpenDialog(this);
         if (ok == JFileChooser.APPROVE_OPTION) {
             initialFile = jFileChooser.getSelectedFile();
