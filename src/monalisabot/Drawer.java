@@ -113,42 +113,29 @@ public class Drawer implements Runnable
         // draw it
         if (line.size() >= 3)
         {
-            //   bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-            try
-            {
-                Thread.sleep(75);//100 also works
-            }
-            catch (Exception e)
-            {
-                System.out.println("haha I have insomnia");
-            }
-            boolean first = true;
-            for (Point p : line)
-            {
-                if (!running)
-                    return;
-                if (first)
+            try {
+                bot.mouseMove(line.get(0).x + offsetX, line.get(0).y + offsetY);
+                Thread.sleep(30);
+                bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                Thread.sleep(30);
+                boolean first = true;
+                for (Point p : line)
                 {
+                    if (!running)
+                        return;
+                    if (first)
+                    {
+                        bot.mouseMove(p.x + offsetX, p.y + offsetY);
+                        first = false;
+                        Thread.sleep(30);
+                        bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                    }
                     bot.mouseMove(p.x + offsetX, p.y + offsetY);
-                    first = false;
-                    try
-                    {
-                        Thread.sleep(75);
-                    }
-                    catch (Exception e)
-                    {
-                        System.out.println("haha I have insomnia");
-                    }
-                    bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                 }
-                bot.mouseMove(p.x + offsetX, p.y + offsetY);
+                bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                Thread.sleep(30);
             }
-            bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-            try
-            {
-                Thread.sleep(75);
-            }
-            catch (Exception e)
+            catch (InterruptedException e)
             {
                 System.out.println("haha I have insomnia");
             }

@@ -1,6 +1,7 @@
 package monalisabot;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -47,36 +48,81 @@ class ImagePreview extends JPanel {
                     g.drawRect(i, j, 0, 0);
     }
 }
+class PreviewFrame extends JFrame implements MouseListener, MouseMotionListener {
+    ImagePreview imagePreview;
+    BufferedImage image;
+    Point initialPoint;
+    PreviewFrame(BufferedImage image, boolean[][] isBlack)
+    {
+        super("Put this window where you want it to be drawn");
+        super.setUndecorated(true);
+        super.setOpacity(0.3f);
+        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        super.setResizable(false);
+        super.setAlwaysOnTop(true);
+        this.image = image;
+        imagePreview = new ImagePreview();
+        imagePreview.setSize(image.getWidth(), image.getHeight());
+        imagePreview.setImage(isBlack);
+        add(imagePreview);
+        addMouseMotionListener(this);
+        addMouseListener(this);
+        pack();
+    }
+    public void set(BufferedImage image, boolean[][] isBlack)
+    {
+        this.image = image;
+        imagePreview.setSize(image.getWidth(), image.getHeight());
+        imagePreview.setImage(isBlack);
+        pack();
+    }
 
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        int x = e.getXOnScreen() - initialPoint.x;
+        int y = e.getYOnScreen() - initialPoint.y;
+        super.setBounds(x, y, image.getWidth(), image.getHeight());
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        initialPoint = new Point(e.getX(), e.getY());
+    }
+
+    //unused
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+
+    @Override
+    public void mouseMoved(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
+}
 public class GUI extends JFrame {
     static final String DEFAULT_FILE_TEXT = "Pick a file";
-    static final String DEFAULT_COORDINATES_TEXT = "Pick coordinates";
-    static final String DEFAULT_SEE_COORDINATES_TEXT = "See coordinates on screen";
     JButton fileButton;
     JSlider thresholdSlider;
     JTextField thresholdShow;
-    JButton coordinatesButton;
-    JButton seeCoordinatesButton;
     JTextArea errorArea;
     JFileChooser jFileChooser;
     boolean setFolder = false;
-    ImagePreview imagePreview;
     File initialFile;
-    Point topLeftMost = null;
-    Point bottomRightMost = null;
+    PreviewFrame locationPreview = null;
     ImagePreparer imagePreparer = null;
     GUI()
     {
         super("Mona Lisa Bot");
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel inside = new JPanel();
-        inside.setLayout(new BoxLayout(inside, BoxLayout.X_AXIS));
-        getContentPane().add(inside);
-
-        JPanel buttons = new JPanel();
-        buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
-        buttons.setMaximumSize(new Dimension(300, 300));
+        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+        getContentPane().setMaximumSize(new Dimension(300, 300));
         jFileChooser = new JFileChooser();
         fileButton = new JButton(DEFAULT_FILE_TEXT);
         fileButton.addActionListener((e) -> {filePopUp();});
@@ -92,9 +138,6 @@ public class GUI extends JFrame {
         thresholdPane.add(thresholdSlider);
         thresholdPane.add(thresholdShow);
 
-        coordinatesButton = new JButton(DEFAULT_COORDINATES_TEXT);
-        seeCoordinatesButton = new JButton(DEFAULT_SEE_COORDINATES_TEXT);
-
         JButton drawButton = new JButton("Start the bot!");
         drawButton.addActionListener((e) -> startBot());
         errorArea = new JTextArea();
@@ -102,16 +145,10 @@ public class GUI extends JFrame {
         errorArea.setDisabledTextColor(Color.RED);
         errorArea.setRows(3);
 
-        buttons.add(fileButton);
-        buttons.add(thresholdPane);
-        buttons.add(coordinatesButton);
-        buttons.add(seeCoordinatesButton);
-        buttons.add(drawButton);
-        buttons.add(errorArea);
-
-        inside.add(buttons);
-        imagePreview = new ImagePreview();
-        inside.add(imagePreview);
+        getContentPane().add(fileButton);
+        getContentPane().add(thresholdPane);
+        getContentPane().add(drawButton);
+        getContentPane().add(errorArea);
         pack();
         super.setLocationRelativeTo(null);
     }
@@ -148,8 +185,13 @@ public class GUI extends JFrame {
                 }
                 imagePreparer = new ImagePreparer(ImageIO.read(initialFile), threshold);
                 imagePreparer.prepareImage();
-                imagePreview.setSize(image.getWidth(), image.getHeight());
-                imagePreview.setImage(imagePreparer.isBlack);
+                if (locationPreview != null) {
+                    locationPreview.set(image, imagePreparer.isBlack);
+                } else {
+                    locationPreview = new PreviewFrame(image, imagePreparer.isBlack);
+                    locationPreview.setVisible(true);
+                }
+
                 pack();
             }
             catch (Exception e)
@@ -174,15 +216,24 @@ public class GUI extends JFrame {
     {
         try
         {
+            int offsetX = locationPreview.getBounds().x;
+            int offsetY = locationPreview.getBounds().y;
+            boolean[][] isBlackCopy = new boolean[imagePreparer.isBlack.length][imagePreparer.isBlack[0].length];
+            for (int i = 0; i < imagePreparer.isBlack.length; i++)
+                for (int j = 0; j < imagePreparer.isBlack[0].length; j++)
+                    isBlackCopy[i][j] = imagePreparer.isBlack[i][j];
             Drawer drawer = new Drawer(imagePreparer.image,
-                                        imagePreparer.isBlack,
-                                        200,
-                                        200,
+                                        isBlackCopy,
+                                        offsetX,
+                                        offsetY,
                                         imagePreparer.blackPixelsCount);
             Thread drawerThread = new Thread(drawer);
             Thread keyboardThread = new Thread(new StopFromKeyboard(drawer));
             drawerThread.start();
             keyboardThread.start();
+            locationPreview.setVisible(false);
+            drawerThread.join();
+            locationPreview.setVisible(true);
         } catch (Exception e) {
             errorArea.setText(e.getMessage());
             e.printStackTrace();
@@ -192,6 +243,7 @@ public class GUI extends JFrame {
     public void pack()
     {
         super.pack();
-        imagePreview.repaint();
+        if (locationPreview != null)
+            locationPreview.repaint();
     }
 }
