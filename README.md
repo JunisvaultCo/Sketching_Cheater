@@ -1,7 +1,7 @@
 # Sketching_Cheater
 A bot that will attempt to draw a(n) (lineart) image while reducing lag using the cursor in Java and C++ (JNI)
 
-Example run: https://www.youtube.com/watch?v=OiaTYnugEts
+Example run here: https://www.youtube.com/watch?v=OiaTYnugEts
 
 **THIS BOT MOVES AND CLICKS THE MOUSE CURSOR. You can control the area it will click on by dragging the overlay of the image. You can also stop the bot at any time by pressing any key from A to Z or spacebar.**
 
